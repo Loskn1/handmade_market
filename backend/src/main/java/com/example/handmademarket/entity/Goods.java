@@ -1,9 +1,13 @@
 package com.example.handmademarket.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "goods")
+@Table(name = "tb_goods")
 public class Goods {
 
     @Id
