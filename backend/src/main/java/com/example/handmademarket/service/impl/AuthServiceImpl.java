@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseResult login(LoginRequest request) {
         // 验证输入
-        if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+        if (request.getUserAccount() == null || request.getUserAccount().trim().isEmpty()) {
             return ResponseResult.fail("用户名不能为空");
         }
         if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 查找用户
-        Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
+        Optional<User> userOptional = userRepository.findByUserAccount(request.getUserAccount());
         if (userOptional.isEmpty()) {
             return ResponseResult.fail("用户名或密码错误");
         }
@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 生成JWT token
-        String token = jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(user.getUserAccount());
 
         // 返回token
         return ResponseResult.ok(token);
@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseResult register(RegisterRequest request) {
         // 验证输入
-        if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+        if (request.getUserAccount() == null || request.getUserAccount().trim().isEmpty()) {
             return ResponseResult.fail("用户名不能为空");
         }
         if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
@@ -74,13 +74,13 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 检查用户名是否已存在
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUserAccount(request.getUserAccount())) {
             return ResponseResult.fail("用户名已存在");
         }
 
         // 创建用户
         User user = new User();
-        user.setUsername(request.getUsername());
+        user.setUserAccount(request.getUserAccount());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setRole(request.getRole() != null ? request.getRole() : "consumer"); // 默认角色
