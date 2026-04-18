@@ -24,7 +24,6 @@ D:\handmade_market\backend\src\main\java\com\example\handmademarket\repository\A
 D:\handmade_market\backend\src\main\java\com\example\handmademarket\dto\RegisterRequest.java
 D:\handmade_market\backend\src\main\java\com\example\handmademarket\repository\UserRepository.java
 D:\handmade_market\backend\src\main\java\com\example\handmademarket\service\UserService.java
-D:\handmade_market\backend\src\main\java\com\example\handmademarket\util\DataInitializer.java
 D:\handmade_market\backend\src\main\java\com\example\handmademarket\entity\Admin.java
 D:\handmade_market\backend\src\main\java\com\example\handmademarket\controller\UserController.java
 D:\handmade_market\backend\src\main\java\com\example\handmademarket\controller\OrderController.java
