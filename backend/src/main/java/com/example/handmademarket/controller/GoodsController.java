@@ -1,34 +1,47 @@
 package com.example.handmademarket.controller;
 
-import com.example.handmademarket.util.ResponseResult;
-import org.springframework.http.ResponseEntity;
+import com.example.handmademarket.entity.Goods;
+import com.example.handmademarket.repository.GoodsRepository;
+import com.example.handmademarket.service.GoodsService;
+import com.example.handmademarket.util.Result;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/goods")
+@RequestMapping("/api")
 public class GoodsController {
 
-    @GetMapping
-    public ResponseEntity<ResponseResult> listGoods() {
-        // TODO: implement goods list and search
-        return ResponseEntity.ok(ResponseResult.ok("商品列表接口骨架"));
+    private final GoodsService goodsService;
+    private final GoodsRepository goodsRepository;
+
+    public GoodsController(GoodsService goodsService, GoodsRepository goodsRepository) {
+        this.goodsService = goodsService;
+        this.goodsRepository = goodsRepository;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseResult> getGoods(@PathVariable Long id) {
-        // TODO: implement goods detail fetch
-        return ResponseEntity.ok(ResponseResult.ok("商品详情接口骨架"));
+    // 智能搜索接口
+    @GetMapping("/search")
+    public Result<List<Goods>> search(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "sort", required = false, defaultValue = "default") String sort
+    ){
+        return goodsService.searchGoods(keyword, sort);
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseResult> createGoods() {
-        // TODO: implement publish goods logic
-        return ResponseEntity.ok(ResponseResult.ok("发布商品接口骨架"));
+    // 智能推荐接口
+    @GetMapping("/goods/recommend")
+    public Result<List<Goods>> recommend(){
+        return goodsService.recommendGoods();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseResult> updateGoods(@PathVariable Long id) {
-        // TODO: implement update goods logic
-        return ResponseEntity.ok(ResponseResult.ok("修改商品接口骨架"));
+    // 【新增】商品详情接口：根据ID查询单个商品
+    @GetMapping("/goods/{id}")
+    public Result<Goods> getGoodsDetail(@PathVariable Long id) {
+        Goods goods = goodsRepository.findById(id).orElse(null);
+        return Result.success(goods);
     }
 }

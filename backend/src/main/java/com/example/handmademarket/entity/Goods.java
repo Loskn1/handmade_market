@@ -1,29 +1,33 @@
 package com.example.handmademarket.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "tb_goods")
+@Table(name = "goods")
 public class Goods {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String description;
+    // 商品名称
+    private String goodsName;
+    // 商品分类
     private String category;
-    private Double price;
-    private Integer stock;
-    private String imageUrl;
-    private String status;
+    // 商品描述
+    private String description;
+    // 商品价格
+    private BigDecimal price;
+    // 商品图片地址
+    private String imgUrl;
+    // 商品销量（智能推荐模块核心字段）
+    private Integer sales;
+    // 商品创建时间
+    private Long createTime;
 
-    // TODO: add seller reference, audit status, tags, and detail fields
-
+    // ==================== 全字段原生 Getter & Setter 方法 ====================
     public Long getId() {
         return id;
     }
@@ -32,20 +36,12 @@ public class Goods {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getGoodsName() {
+        return goodsName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 
     public String getCategory() {
@@ -56,35 +52,44 @@ public class Goods {
         this.category = category;
     }
 
-    public Double getPrice() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public Integer getStock() {
-        return stock;
+    public String getImgUrl() {
+        return imgUrl;
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public Integer getSales() {
+        return sales;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setSales(Integer sales) {
+        this.sales = sales;
     }
 
-    public String getStatus() {
-        return status;
+    public Long getCreateTime() {
+        return createTime;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
+
 }
