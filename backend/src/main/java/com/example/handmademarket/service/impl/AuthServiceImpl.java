@@ -1,5 +1,8 @@
 package com.example.handmademarket.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +31,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseResult login(LoginRequest request) {
-        // 验证输入
         if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
             return ResponseResult.fail("用户名不能为空");
         }
@@ -36,56 +38,56 @@ public class AuthServiceImpl implements AuthService {
             return ResponseResult.fail("密码不能为空");
         }
 
-        // 查找用户
-        Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
+        Optional<User> userOptional = userRepository.findByUserAccount(request.getUsername());
         if (userOptional.isEmpty()) {
             return ResponseResult.fail("用户名或密码错误");
         }
 
         User user = userOptional.get();
 
-        // 验证密码
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseResult.fail("用户名或密码错误");
         }
 
-        // 生成JWT token
-        String token = jwtUtil.generateToken(user.getUsername());
+        // 更新最后登录时间
+        user.setLastLoginTime(LocalDateTime.now());
+        userRepository.save(user);
 
-        // 返回token
-        return ResponseResult.ok(token);
+        String token = jwtUtil.generateToken(user.getUserAccount());
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("token", token);
+        data.put("userAccount", user.getUserAccount());
+        data.put("userName", user.getUserName());
+        data.put("role", user.getRole());
+        data.put("userId", user.getUser_id());
+
+        return ResponseResult.ok("登录成功", data);
     }
 
     @Override
     public ResponseResult register(RegisterRequest request) {
-        // 验证输入
         if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
             return ResponseResult.fail("用户名不能为空");
         }
         if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
             return ResponseResult.fail("密码不能为空");
         }
-        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
-            return ResponseResult.fail("邮箱不能为空");
-        }
-        // 简单邮箱格式验证
-        if (!request.getEmail().contains("@")) {
-            return ResponseResult.fail("邮箱格式不正确");
-        }
 
-        // 检查用户名是否已存在
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUserAccount(request.getUsername())) {
             return ResponseResult.fail("用户名已存在");
         }
 
-        // 创建用户
         User user = new User();
-        user.setUsername(request.getUsername());
+        user.setUserAccount(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole() != null ? request.getRole() : "consumer"); // 默认角色
+        user.setPhone(request.getPhone());
+        user.setRole(request.getRole() != null ? request.getRole() : "1");
+        user.setRegisterTime(LocalDateTime.now());
+        user.setStatus(1);
+        user.setCreditScore(80);
 
-        // 保存用户
         userRepository.save(user);
 
         return ResponseResult.ok("注册成功");

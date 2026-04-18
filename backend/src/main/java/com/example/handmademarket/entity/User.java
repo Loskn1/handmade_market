@@ -1,68 +1,97 @@
 package com.example.handmademarket.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "tb_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Long user_id;
 
-    private String username;
+    @Column(name = "user_account", unique = true, nullable = false, length = 50)
+    private String userAccount;
+
+    @Column(name = "user_pwd", nullable = false, length = 100)
     private String password;
-    private String email;
-    private String role;
+
+    @Column(name = "user_name", length = 20)
+    private String userName;
+
+    @Column(name = "phone", length = 11)
     private String phone;
 
-    // TODO: add additional fields for profile, status, and business identity
+    @Column(name = "email", length = 50)
+    private String email;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "avatar", length = 255)
+    private String avatar;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "address", length = 255)
+    private String address;
 
-    public String getUsername() {
-        return username;
-    }
+    @Column(name = "role")
+    private String role;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    @Column(name = "specialty", length = 100)
+    private String specialty;
 
-    public String getPassword() {
-        return password;
-    }
+    @Column(name = "credit_score")
+    private Integer creditScore;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @Column(name = "register_time")
+    private LocalDateTime registerTime;
 
-    public String getEmail() {
-        return email;
-    }
+    @Column(name = "last_login_time")
+    private LocalDateTime lastLoginTime;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Column(name = "status")
+    private Integer status;
 
-    public String getRole() {
-        return role;
-    }
+    // Getters and Setters
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    public Long getUser_id() { return user_id; }
+    public void setUser_id(Long user_id) { this.user_id = user_id; }
 
-    public String getPhone() {
-        return phone;
-    }
+    public String getUserAccount() { return userAccount; }
+    public void setUserAccount(String userAccount) { this.userAccount = userAccount; }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
+    public String getSpecialty() { return specialty; }
+    public void setSpecialty(String specialty) { this.specialty = specialty; }
+
+    public Integer getCreditScore() { return creditScore; }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+
+    public LocalDateTime getRegisterTime() { return registerTime; }
+    public void setRegisterTime(LocalDateTime registerTime) { this.registerTime = registerTime; }
+
+    public LocalDateTime getLastLoginTime() { return lastLoginTime; }
+    public void setLastLoginTime(LocalDateTime lastLoginTime) { this.lastLoginTime = lastLoginTime; }
+
+    public Integer getStatus() { return status; }
+    public void setStatus(Integer status) { this.status = status; }
 }
