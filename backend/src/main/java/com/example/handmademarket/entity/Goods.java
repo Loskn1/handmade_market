@@ -1,11 +1,7 @@
 package com.example.handmademarket.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_goods")
@@ -19,26 +15,47 @@ public class Goods {
     @Column(name = "creator_id")
     private Integer creatorId;
 
-    @Column(name = "goods_name")
+    @Column(name = "goods_name", length = 50)
     private String title;
-
-    @Column(name = "details")
-    private String description;
-
-    @Column(name = "category")
-    private String category;
 
     @Column(name = "price")
     private Double price;
 
-    @Column(name = "images")
-    private String imageUrl;
+    @Column(name = "reserve_price")
+    private Double reservePrice;
+
+    @Column(name = "material", length = 50)
+    private String material;
+
+    @Column(name = "size", length = 50)
+    private String size;
+
+    @Column(name = "style", length = 50)
+    private String style;
+
+    @Column(name = "delivery_cycle")
+    private Integer deliveryCycle;
+
+    @Column(name = "details", length = 500)
+    private String description;
+    private String category;
+
+    @Column(name = "publish_time")
+    private LocalDateTime publishTime;
+
+    @Column(name = "audit_time")
+    private LocalDateTime auditTime;
+
+    @Column(name = "auditor_id")
+    private Integer auditorId;
 
     @Column(name = "status")
     private Integer status;
 
-    public Integer getCreatorId() { return creatorId; }
-    public void setCreatorId(Integer creatorId) { this.creatorId = creatorId; }
+    @Column(name = "audit_remark", length = 200)
+    private String auditRemark;
+
+    // TODO: add seller reference, audit status, tags, and detail fields
 
     public Long getId() {
         return id;
@@ -48,51 +65,36 @@ public class Goods {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getSize() { return size; }
+    public void setSize(String size) { this.size = size; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public String getStyle() { return style; }
+    public void setStyle(String style) { this.style = style; }
 
-    public String getDescription() {
-        return description;
-    }
+    public Integer getDeliveryCycle() { return deliveryCycle; }
+    public void setDeliveryCycle(Integer deliveryCycle) { this.deliveryCycle = deliveryCycle; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getCategory() {
-        return category;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public Double getPrice() {
-        return price;
-    }
+    public LocalDateTime getPublishTime() { return publishTime; }
+    public void setPublishTime(LocalDateTime publishTime) { this.publishTime = publishTime; }
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
+    public LocalDateTime getAuditTime() { return auditTime; }
+    public void setAuditTime(LocalDateTime auditTime) { this.auditTime = auditTime; }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public Integer getAuditorId() { return auditorId; }
+    public void setAuditorId(Integer auditorId) { this.auditorId = auditorId; }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    public Integer getStatus() { return status; }
+    public void setStatus(Integer status) { this.status = status; }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+    public String getAuditRemark() { return auditRemark; }
+    public void setAuditRemark(String auditRemark) { this.auditRemark = auditRemark; }
 }

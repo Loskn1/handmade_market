@@ -13,6 +13,7 @@ public class ResponseResult {
     public ResponseResult(int code, boolean success, String message, Object data) {
         this.code = code;
         this.success = success;
+        this.code = success ? 200 : 400;
         this.message = message;
         this.data = data;
     }
@@ -29,6 +30,13 @@ public class ResponseResult {
         return new ResponseResult(200, true, "操作成功", data);
     }
 
+    public static ResponseResult ok(String message, Object data) {
+        return new ResponseResult(true, message, data);
+    }
+
+    public static ResponseResult ok(String message) {
+        return new ResponseResult(true, message, null);
+    }
 
     public static ResponseResult fail(String message) {
         return new ResponseResult(400, false, message, null);
@@ -41,6 +49,9 @@ public class ResponseResult {
     public void setCode(int code) {
         this.code = code;
     }
+
+    public int getCode() { return code; }
+    public void setCode(int code) { this.code = code; }
 
     public boolean isSuccess() {
         return success;

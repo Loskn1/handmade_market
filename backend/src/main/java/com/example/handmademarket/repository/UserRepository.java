@@ -8,13 +8,7 @@ import com.example.handmademarket.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByUserAccount(String useraccount);
+    Optional<User> findByUserAccount(String userAccount);
 
-    boolean existsByUserAccount(String useraccount);
-
-    Optional<User> findByPhone(String phone);
-
-    boolean existsByPhone(String phone);
-
-    Optional<User> findByUserAccountOrPhone(String userAccount, String phone);
+    boolean existsByUserAccount(String userAccount);
 }
