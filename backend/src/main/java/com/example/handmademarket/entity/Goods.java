@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_goods")
+@Table(name = "goods")
 public class Goods {
 
     @Id
@@ -65,6 +65,7 @@ public class Goods {
         publishTime = LocalDateTime.now();
     }
 
+    // ==================== 全字段原生 Getter & Setter 方法 ====================
     public Long getId() {
         return id;
     }
@@ -153,13 +154,11 @@ public class Goods {
         this.images = images;
     }
 
-    public String getCategory() {
-        return category;
-    }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public Double getReservePrice() { return reservePrice; }
+    public void setReservePrice(Double reservePrice) { this.reservePrice = reservePrice; }
 
     public LocalDateTime getPublishTime() {
         return publishTime;
@@ -201,3 +200,4 @@ public class Goods {
         this.auditRemark = auditRemark;
     }
 }
+

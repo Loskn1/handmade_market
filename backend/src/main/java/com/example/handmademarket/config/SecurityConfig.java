@@ -1,8 +1,9 @@
 package com.example.handmademarket.config;
 
+import org.springframework.security.config.Customizer;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,37 +19,38 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // ===================== 新增！解决本次致命报错的核心Bean =====================
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // Spring官方标准密码加密器，完美适配AuthServiceImpl的依赖需求
+        return new BCryptPasswordEncoder();
+    }
+    // ===========================================================================
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()
                 )
-                .httpBasic(Customizer.withDefaults());
-
+                .httpBasic(httpBasic -> httpBasic.disable());
         return http.build();
     }
 
+    // 跨域配置
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:3000", "http://127.0.0.1:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setMaxAge(3600L);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
 
