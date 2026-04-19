@@ -1,3 +1,4 @@
+
 package com.example.handmademarket.util;
 
 // 全局统一返回结果类 纯原生Java 无Lombok依赖
@@ -52,5 +53,6 @@ public class Result<T> {
     public static <T> Result<T> error(String msg) {
         return new Result<>(500, msg, null);
     }
-
 }
+
+
