@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "tb_order")
 public class Order {
 
     @Id
@@ -13,6 +13,7 @@ public class Order {
     private Long id;
 
     private Long userId;
+    private Long goodsId;
     private LocalDateTime createdAt;
     private String status;
     private Double totalAmount;
@@ -20,8 +21,6 @@ public class Order {
     @ElementCollection
     @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
     private List<String> items;
-
-    // TODO: replace items with proper order item entity and address relation
 
     public Long getId() {
         return id;
@@ -37,6 +36,14 @@ public class Order {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -71,3 +78,4 @@ public class Order {
         this.items = items;
     }
 }
+

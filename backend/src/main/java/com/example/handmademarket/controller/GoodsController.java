@@ -1,6 +1,9 @@
 package com.example.handmademarket.controller;
 
+import com.example.handmademarket.dto.CreateGoodsRequest;
 import com.example.handmademarket.util.ResponseResult;
+import com.example.handmademarket.service.GoodsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,27 +11,59 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/goods")
 public class GoodsController {
 
+    @Autowired
+    private GoodsService goodsService;
+
     @GetMapping
     public ResponseEntity<ResponseResult> listGoods() {
-        // TODO: implement goods list and search
-        return ResponseEntity.ok(ResponseResult.ok("商品列表接口骨架"));
+        return ResponseEntity.ok(goodsService.listGoods());
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ResponseResult> getGoodsByCategory(@PathVariable String category) {
+        return ResponseEntity.ok(goodsService.getGoodsByCategory(category));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ResponseResult> getGoodsByStatus(@PathVariable Integer status) {
+        return ResponseEntity.ok(goodsService.getGoodsByStatus(status));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseResult> searchGoods(@RequestParam String keyword) {
+        return ResponseEntity.ok(goodsService.searchGoods(keyword));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseResult> getGoods(@PathVariable Long id) {
-        // TODO: implement goods detail fetch
-        return ResponseEntity.ok(ResponseResult.ok("商品详情接口骨架"));
+        return ResponseEntity.ok(goodsService.getGoods(id));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseResult> createGoods() {
-        // TODO: implement publish goods logic
-        return ResponseEntity.ok(ResponseResult.ok("发布商品接口骨架"));
+    public ResponseEntity<ResponseResult> createGoods(
+            @RequestBody CreateGoodsRequest request,
+            @RequestHeader("X-User-Id") Long creatorId) {
+        return ResponseEntity.ok(goodsService.createGoods(request, creatorId));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseResult> updateGoods(@PathVariable Long id) {
-        // TODO: implement update goods logic
-        return ResponseEntity.ok(ResponseResult.ok("修改商品接口骨架"));
+        return ResponseEntity.ok(goodsService.updateGoods(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseResult> offlineGoods(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long creatorId) {
+        return ResponseEntity.ok(goodsService.offlineGoods(id, creatorId));
+    }
+
+    @PutMapping("/{id}/audit")
+    public ResponseEntity<ResponseResult> auditGoods(
+            @PathVariable Long id,
+            @RequestParam Integer status,
+            @RequestParam(required = false) String reason) {
+        return ResponseEntity.ok(goodsService.auditGoods(id, status, reason));
     }
 }
+

@@ -1,16 +1,23 @@
 package com.example.handmademarket.dto;
 
 public class LoginRequest {
-
-    private String useraccount;
+    private String userAccount;
     private String password;
 
-    public String getUserAccount() {
-        return useraccount;
+    public LoginRequest() {
     }
 
-    public void setUserAccount(String useraccount) {
-        this.useraccount = useraccount;
+    public LoginRequest(String userAccount, String password) {
+        this.userAccount = userAccount;
+        this.password = password;
+    }
+
+    public String getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount;
     }
 
     public String getPassword() {
