@@ -1,5 +1,7 @@
 package com.example.handmademarket.config;
 
+import org.springframework.security.config.Customizer;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,20 +30,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 所有接口100%无条件全部放行，无需登录、无需token
+                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
                 )
-                // 彻底关闭CSRF防护（前后端分离项目必须关闭）
-                .csrf(csrf -> csrf.disable())
-                // 彻底关闭所有登录校验、session限制
-                .formLogin(form -> form.disable())
-                .httpBasic(basic -> basic.disable())
-                .sessionManagement(session -> session.disable());
-
-        // 全局跨域配置，完全放行你前端localhost:3000所有请求
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
+                .httpBasic(httpBasic -> httpBasic.disable());
         return http.build();
     }
 
