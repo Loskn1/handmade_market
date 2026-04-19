@@ -17,47 +17,31 @@ public class ResponseResult {
         this.data = data;
     }
 
-    public static ResponseResult ok(Object data) {
-        return new ResponseResult(200, true, "OK", data);
-    }
-
     public static ResponseResult ok(String message, Object data) {
         return new ResponseResult(200, true, message, data);
+    }
+
+    public static ResponseResult ok(String message) {
+        return new ResponseResult(200, true, message, null);
+    }
+
+    public static ResponseResult ok(Object data) {
+        return new ResponseResult(200, true, "操作成功", data);
     }
 
     public static ResponseResult fail(String message) {
         return new ResponseResult(400, false, message, null);
     }
 
-    public int getCode() {
-        return code;
-    }
+    public int getCode() { return code; }
+    public void setCode(int code) { this.code = code; }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
+    public boolean isSuccess() { return success; }
+    public void setSuccess(boolean success) { this.success = success; }
 
-    public boolean isSuccess() {
-        return success;
-    }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
+    public Object getData() { return data; }
+    public void setData(Object data) { this.data = data; }
 }

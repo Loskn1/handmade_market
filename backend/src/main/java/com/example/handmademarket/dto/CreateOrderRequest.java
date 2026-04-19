@@ -9,21 +9,6 @@ public class CreateOrderRequest {
     private String payType;
     private String remark;
 
-    public static class OrderItemDTO {
-        private Integer goodsId;
-        private Integer quantity;
-        private String spec;
-
-        public Integer getGoodsId() { return goodsId; }
-        public void setGoodsId(Integer goodsId) { this.goodsId = goodsId; }
-
-        public Integer getQuantity() { return quantity; }
-        public void setQuantity(Integer quantity) { this.quantity = quantity; }
-
-        public String getSpec() { return spec; }
-        public void setSpec(String spec) { this.spec = spec; }
-    }
-
     public List<OrderItemDTO> getItems() { return items; }
     public void setItems(List<OrderItemDTO> items) { this.items = items; }
 
@@ -35,4 +20,15 @@ public class CreateOrderRequest {
 
     public String getRemark() { return remark; }
     public void setRemark(String remark) { this.remark = remark; }
+
+    public static class OrderItemDTO {
+        private Integer goodsId;
+        private Integer quantity;
+
+        public Integer getGoodsId() { return goodsId; }
+        public void setGoodsId(Integer goodsId) { this.goodsId = goodsId; }
+
+        public Integer getQuantity() { return quantity; }
+        public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    }
 }

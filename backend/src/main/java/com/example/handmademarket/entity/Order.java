@@ -36,10 +36,10 @@ public class Order {
     @Column(name = "balance")
     private BigDecimal balance;
 
-    @Column(name = "delivery_address")
+    @Column(name = "delivery_address", length = 255)
     private String deliveryAddress;
 
-    @Column(name = "logistics_info")
+    @Column(name = "logistics_info", length = 200)
     private String logisticsInfo;
 
     @Column(name = "create_time")
@@ -54,13 +54,28 @@ public class Order {
     @Column(name = "receive_time")
     private LocalDateTime receiveTime;
 
-    @Column(name = "pay_type")
+    @Column(name = "pay_type", length = 20)
     private String payType;
 
     @Column(name = "status")
     private Integer status;
 
-    @Column(name = "remark")
+    @Column(name = "payment_status")
+    private Integer paymentStatus;
+
+    @Column(name = "cancel_reason", length = 200)
+    private String cancelReason;
+
+    @Column(name = "dispute_status")
+    private Integer disputeStatus;
+
+    @Column(name = "dispute_result", length = 500)
+    private String disputeResult;
+
+    @Column(name = "dispute_time")
+    private LocalDateTime disputeTime;
+
+    @Column(name = "remark", length = 200)
     private String remark;
 
     // Getters and Setters
@@ -115,6 +130,21 @@ public class Order {
 
     public Integer getStatus() { return status; }
     public void setStatus(Integer status) { this.status = status; }
+
+    public Integer getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(Integer paymentStatus) { this.paymentStatus = paymentStatus; }
+
+    public String getCancelReason() { return cancelReason; }
+    public void setCancelReason(String cancelReason) { this.cancelReason = cancelReason; }
+
+    public Integer getDisputeStatus() { return disputeStatus; }
+    public void setDisputeStatus(Integer disputeStatus) { this.disputeStatus = disputeStatus; }
+
+    public String getDisputeResult() { return disputeResult; }
+    public void setDisputeResult(String disputeResult) { this.disputeResult = disputeResult; }
+
+    public LocalDateTime getDisputeTime() { return disputeTime; }
+    public void setDisputeTime(LocalDateTime disputeTime) { this.disputeTime = disputeTime; }
 
     public String getRemark() { return remark; }
     public void setRemark(String remark) { this.remark = remark; }
