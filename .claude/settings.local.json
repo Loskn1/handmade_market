@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -X POST http://localhost:8080/api/goods -H 'X-User-Id: 1' -H 'Content-Type: application/json' -d '{\"title\":\"Test Product\",\"description\":\"Test\",\"category\":\"Test\",\"price\":99.99,\"stock\":10,\"imageUrls\":[\"http://example.com/img1.jpg\",\"http://example.com/img2.jpg\"]}')",
+      "Bash(curl -s -X DELETE http://localhost:8080/api/goods/1/off-shelf -H 'X-User-Id: 1')",
+      "Bash(curl -X DELETE http://localhost:8080/api/goods/1/off-shelf -H 'X-User-Id: 1')",
+      "Bash(timeout 60 mvn spring-boot:run)",
+      "Bash(curl -s -X POST http://localhost:8080/api/goods -H 'X-User-Id: 1' -H 'Content-Type: application/json' -d '{\"title\":\"Test\",\"description\":\"Test\",\"category\":\"Test\",\"price\":99.99,\"stock\":10,\"imageUrls\":[\"http://example.com/1.jpg\",\"http://example.com/2.jpg\"]}')",
+      "Bash(mysql -h localhost -u root -pmysql123 handmade_platform -e \"SELECT goods_id, goods_name, status FROM tb_goods WHERE goods_id = 1;\")",
+      "Bash(pkill -f \"mvn spring-boot:run\")",
+      "Bash(curl -s http://localhost:8080/api/goods/1)",
+      "Bash(curl -s -X POST http://localhost:8080/api/goods -H 'X-User-Id: 1' -H 'Content-Type: application/json' -d '{\"title\":\"审核测试商品\",\"description\":\"这是一个待审核的商品\",\"category\":\"测试\",\"price\":199.99,\"stock\":20,\"imageUrls\":[\"http://example.com/1.jpg\",\"http://example.com/2.jpg\"]}')",
+      "Bash(curl -s http://localhost:8080/api/goods/admin/pending-audit?page=1)",
+      "Bash(curl -s -X POST http://localhost:8080/api/goods/1/audit -H 'Content-Type: application/json' -d '{\"approved\":true,\"reason\":null}')",
+      "Bash(netstat -ano)",
+      "Bash(curl -s -X POST http://localhost:8080/api/goods -H 'X-User-Id: 1' -H 'Content-Type: application/json' -d '{\"title\":\"审核测试\",\"description\":\"待审核\",\"category\":\"测试\",\"price\":199.99,\"stock\":20,\"imageUrls\":[\"http://example.com/1.jpg\",\"http://example.com/2.jpg\"]}')",
+      "Bash(curl -s -X POST http://localhost:8080/api/goods -H 'X-User-Id: 1' -H 'Content-Type: application/json' -d '{\"title\":\"Test Product\",\"description\":\"Test\",\"category\":\"Test\",\"price\":199.99,\"stock\":20,\"imageUrls\":[\"http://example.com/1.jpg\",\"http://example.com/2.jpg\"]}')",
+      "Bash(curl -s -X POST http://localhost:8080/api/goods/1/audit -H 'Content-Type: application/json' -d '{\"approved\":true}')",
+      "Bash(mvn clean *)",
+      "Bash(timeout 30 mvn spring-boot:run -DskipTests)",
+      "Bash(mvn spring-boot:run -DskipTests)",
+      "Bash(mysql -h localhost -u root -pmysql123 handmade_platform)",
+      "Bash(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)",
+      "Bash(java -cp \"target/classes:$\\(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout\\)\" InsertGoodsData)",
+      "Bash(javac DeleteTestData.java)",
+      "Bash(java -cp \".:target/classes:$\\(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout\\)\" DeleteTestData)"
+    ]
+  }
+}

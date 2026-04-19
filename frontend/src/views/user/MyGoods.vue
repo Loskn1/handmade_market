@@ -6,9 +6,9 @@
 
     <div class="goods-list">
       <div v-for="goods in filteredGoods" :key="goods.id" class="goods-card">
-        <img :src="goods.imageUrl" class="goods-img">
-        <div class="goods-info"><h4>{{ goods.name }}</h4><p class="price">¥{{ goods.price }}</p><p class="stock">库存：{{ goods.stock }}</p><span :class="['status', goods.status]">{{ getStatusText(goods.status) }}</span><p v-if="goods.rejectReason" class="reject-reason">驳回原因：{{ goods.rejectReason }}</p></div>
-        <div class="goods-actions"><button v-if="goods.status === 'pending'" class="edit-btn" disabled>审核中</button><button v-if="goods.status === 'approved'" class="off-btn" @click="offShelf(goods)">下架</button><button v-if="goods.status === 'rejected'" class="edit-btn" @click="editGoods(goods)">修改</button><button v-if="goods.status === 'offline'" class="edit-btn" @click="editGoods(goods)">编辑</button></div>
+        <img :src="goods.imageUrls && goods.imageUrls[0] ? goods.imageUrls[0] : 'https://via.placeholder.com/100'" class="goods-img">
+        <div class="goods-info"><h4>{{ goods.title }}</h4><p class="price">¥{{ goods.price }}</p><p class="stock">库存：{{ goods.stock }}</p><span :class="['status', mapStatus(goods.auditStatus, goods.shelfStatus)]">{{ getStatusText(goods.auditStatus, goods.shelfStatus) }}</span><p v-if="goods.rejectReason" class="reject-reason">驳回原因：{{ goods.rejectReason }}</p></div>
+        <div class="goods-actions"><button v-if="goods.auditStatus === 'PENDING'" class="edit-btn" disabled>审核中</button><button v-if="goods.auditStatus === 'APPROVED' && goods.shelfStatus === 'ON_SHELF'" class="off-btn" @click="offShelf(goods)">下架</button><button v-if="goods.auditStatus === 'REJECTED'" class="edit-btn" @click="editGoods(goods)">修改</button><button v-if="goods.shelfStatus === 'OFF_SHELF'" class="edit-btn" @click="editGoods(goods)">编辑</button></div>
       </div>
       <div v-if="filteredGoods.length === 0" class="empty">暂无商品，点击发布按钮上架商品</div>
     </div>
@@ -16,25 +16,72 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 const activeTab = ref('all')
 const tabs = [{ label: '全部', value: 'all' }, { label: '审核中', value: 'pending' }, { label: '已上架', value: 'approved' }, { label: '已下架', value: 'offline' }, { label: '审核未通过', value: 'rejected' }]
 
-const goodsList = ref([
-  { id: 1, name: '青花瓷茶杯', price: 198, stock: 50, status: 'approved', imageUrl: 'https://picsum.photos/id/30/100/100' },
-  { id: 2, name: '手工编织包', price: 299, stock: 30, status: 'pending', imageUrl: 'https://picsum.photos/id/31/100/100' },
-  { id: 3, name: '黄杨木雕', price: 399, stock: 20, status: 'rejected', rejectReason: '图片不够清晰', imageUrl: 'https://picsum.photos/id/32/100/100' }
-])
+const goodsList = ref([])
 
-const getCount = (status) => status === 'all' ? goodsList.value.length : goodsList.value.filter(g => g.status === status).length
-const filteredGoods = computed(() => activeTab.value === 'all' ? goodsList.value : goodsList.value.filter(g => g.status === activeTab.value))
-const getStatusText = (s) => ({ pending: '审核中', approved: '已上架', offline: '已下架', rejected: '审核未通过' }[s])
+const getCount = (status) => {
+  if (status === 'all') return goodsList.value.length
+  return goodsList.value.filter(g => mapStatus(g.auditStatus, g.shelfStatus) === status).length
+}
 
-const offShelf = (goods) => { goods.status = 'offline'; alert('商品已下架') }
-const editGoods = (goods) => { alert(`编辑商品 ${goods.name}`) }
+const filteredGoods = computed(() => {
+  if (activeTab.value === 'all') return goodsList.value
+  return goodsList.value.filter(g => mapStatus(g.auditStatus, g.shelfStatus) === activeTab.value)
+})
+
+const mapStatus = (auditStatus, shelfStatus) => {
+  if (auditStatus === 'PENDING') return 'pending'
+  if (auditStatus === 'REJECTED') return 'rejected'
+  if (shelfStatus === 'ON_SHELF') return 'approved'
+  return 'offline'
+}
+
+const getStatusText = (auditStatus, shelfStatus) => {
+  if (auditStatus === 'PENDING') return '审核中'
+  if (auditStatus === 'REJECTED') return '审核未通过'
+  if (shelfStatus === 'ON_SHELF') return '已上架'
+  return '已下架'
+}
+
+const offShelf = async (goods) => {
+  try {
+    const userId = localStorage.getItem('userId') || 1
+    await axios.delete(`http://localhost:8080/api/goods/${goods.id}/off-shelf`, {
+      headers: { 'X-User-Id': userId }
+    })
+    goods.shelfStatus = 'OFF_SHELF'
+    alert('商品已下架')
+  } catch (error) {
+    alert('下架失败：' + (error.response?.data?.message || error.message))
+  }
+}
+
+const editGoods = (goods) => {
+  alert(`编辑商品 ${goods.title}`)
+}
+
+const loadGoods = async () => {
+  try {
+    const userId = localStorage.getItem('userId') || 1
+    const response = await axios.get(`http://localhost:8080/api/goods/seller/${userId}`)
+    if (response.data.success) {
+      goodsList.value = response.data.data || []
+    }
+  } catch (error) {
+    console.error('加载商品失败:', error)
+  }
+}
+
+onMounted(() => {
+  loadGoods()
+})
 </script>
 
 <style scoped>

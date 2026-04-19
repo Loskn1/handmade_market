@@ -14,12 +14,11 @@
     </div>
 
     <form v-else @submit.prevent="submitGoods" class="publish-form">
-      <div class="form-group"><label>商品名称 <span class="required">*</span></label><input v-model="form.name" placeholder="请输入商品名称（最多50字）" maxlength="50" required></div>
-      <div class="form-row"><div class="form-group"><label>价格 <span class="required">*</span></label><input v-model.number="form.price" type="number" step="0.01" placeholder="售价" required></div><div class="form-group"><label>原价</label><input v-model.number="form.originalPrice" type="number" step="0.01" placeholder="原价"></div></div>
-      <div class="form-row"><div class="form-group"><label>库存 <span class="required">*</span></label><input v-model.number="form.stock" type="number" placeholder="库存数量" required></div><div class="form-group"><label>商品分类</label><select v-model="form.category"><option value="">请选择分类</option><option>陶瓷</option><option>编织</option><option>木雕</option><option>皮具</option><option>饰品</option><option>刺绣</option></select></div></div>
-      <div class="form-group"><label>商品图片 <span class="required">*</span> (至少2张)</label><div class="image-upload"><div class="image-list"><div v-for="(img, idx) in form.images" :key="idx" class="image-item"><img :src="img"><button type="button" @click="removeImage(idx)">✕</button></div><div v-if="form.images.length < 5" class="upload-btn" @click="triggerUpload">+ 上传图片</div></div><input type="file" ref="fileInput" accept="image/jpeg,image/png" style="display: none" multiple @change="handleUpload"><p class="tip">支持jpg、png格式，建议尺寸800x800，单张≤5M</p></div></div>
+      <div class="form-group"><label>商品名称 <span class="required">*</span></label><input v-model="form.title" placeholder="请输入商品名称（最多50字）" maxlength="50" required></div>
+      <div class="form-row"><div class="form-group"><label>价格 <span class="required">*</span></label><input v-model.number="form.price" type="number" step="0.01" placeholder="售价" required></div><div class="form-group"><label>库存 <span class="required">*</span></label><input v-model.number="form.stock" type="number" placeholder="库存数量" required></div></div>
+      <div class="form-group"><label>商品分类</label><select v-model="form.category"><option value="">请选择分类</option><option>陶瓷</option><option>编织</option><option>木雕</option><option>皮具</option><option>饰品</option><option>刺绣</option></select></div>
+      <div class="form-group"><label>商品图片 <span class="required">*</span> (至少2张)</label><div class="image-upload"><div class="image-list"><div v-for="(img, idx) in form.imageUrls" :key="idx" class="image-item"><img :src="img"><button type="button" @click="removeImage(idx)">✕</button></div><div v-if="form.imageUrls.length < 5" class="upload-btn" @click="triggerUpload">+ 上传图片</div></div><input type="file" ref="fileInput" accept="image/jpeg,image/png" style="display: none" multiple @change="handleUpload"><p class="tip">支持jpg、png格式，建议尺寸800x800，单张≤5M</p></div></div>
       <div class="form-group"><label>商品描述 <span class="required">*</span></label><textarea v-model="form.description" rows="6" placeholder="详细描述商品的材质、工艺、尺寸等信息" required></textarea></div>
-      <div class="form-group"><label>发货信息</label><div class="form-row"><div class="form-group"><select v-model="form.shippingTime"><option>24小时内发货</option><option>48小时内发货</option><option>72小时内发货</option></select></div><div class="form-group"><input v-model.number="form.shippingFee" type="number" step="0.01" placeholder="运费（0表示包邮）"></div></div></div>
       <div class="form-actions"><button type="button" class="cancel-btn" @click="$router.back()">取消</button><button type="submit" class="submit-btn" :disabled="submitting">{{ submitting ? '提交中...' : '发布商品' }}</button></div>
     </form>
   </div>
@@ -36,7 +35,14 @@ const submitting = ref(false)
 const fileInput = ref(null)
 const isVerified = ref(false)
 
-const form = ref({ name: '', price: '', originalPrice: '', stock: '', category: '', images: [], description: '', shippingTime: '48小时内发货', shippingFee: 0 })
+const form = ref({
+  title: '',
+  price: '',
+  stock: '',
+  category: '',
+  imageUrls: [],
+  description: ''
+})
 
 const triggerUpload = () => { fileInput.value.click() }
 
@@ -45,23 +51,50 @@ const handleUpload = (e) => {
   for (const file of files) {
     if (file.size > 5 * 1024 * 1024) { alert('图片不能超过5MB'); continue }
     const reader = new FileReader()
-    reader.onload = (ev) => { form.value.images.push(ev.target.result) }
+    reader.onload = (ev) => { form.value.imageUrls.push(ev.target.result) }
     reader.readAsDataURL(file)
   }
   fileInput.value.value = ''
 }
 
-const removeImage = (idx) => { form.value.images.splice(idx, 1) }
+const removeImage = (idx) => { form.value.imageUrls.splice(idx, 1) }
 
-const submitGoods = () => {
-  if (!form.value.name) return alert('请输入商品名称')
+const submitGoods = async () => {
+  if (!form.value.title) return alert('请输入商品名称')
   if (!form.value.price) return alert('请输入商品价格')
   if (!form.value.stock) return alert('请输入库存数量')
-  if (form.value.images.length < 2) return alert('请至少上传2张商品图片')
+  if (form.value.imageUrls.length < 2) return alert('请至少上传2张商品图片')
   if (!form.value.description) return alert('请输入商品描述')
-  
+
   submitting.value = true
-  setTimeout(() => { alert('商品发布成功！'); router.push('/user/goods'); submitting.value = false }, 1000)
+  try {
+    const userId = localStorage.getItem('userId') || 1
+    const response = await axios.post('http://localhost:8080/api/goods', {
+      title: form.value.title,
+      description: form.value.description,
+      category: form.value.category,
+      price: form.value.price,
+      stock: form.value.stock,
+      imageUrls: form.value.imageUrls
+    }, {
+      headers: {
+        'X-User-Id': userId,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (response.data.success) {
+      alert('商品发布成功！')
+      router.push('/user/goods')
+    } else {
+      alert('发布失败：' + response.data.message)
+    }
+  } catch (error) {
+    console.error('发布商品错误:', error)
+    alert('发布商品失败，请检查网络连接')
+  } finally {
+    submitting.value = false
+  }
 }
 
 onMounted(() => {

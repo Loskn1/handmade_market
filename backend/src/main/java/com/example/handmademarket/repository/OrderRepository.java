@@ -44,3 +44,4 @@ public interface OrderRepository extends JpaRepository<Order, String>, JpaSpecif
     @Query("SELECT COUNT(o) FROM Order o WHERE o.buyerId = :buyerId AND o.status = :status")
     long countByBuyerIdAndStatus(@Param("buyerId") Integer buyerId, @Param("status") Integer status);
 }
+

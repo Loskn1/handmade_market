@@ -8,59 +8,103 @@ import java.time.LocalDateTime;
 public class Evaluation {
 
     @Id
-    @Column(name = "eval_id", length = 30)
     private String evalId;
 
-    @Column(name = "order_id", length = 50)
-    private String orderId;
+    @Column(name = "order_id")
+    private Long orderId;
 
     @Column(name = "evaluator_id")
-    private Integer evaluatorId;
+    private Long evaluatorId;
 
     @Column(name = "evaluated_id")
-    private Integer evaluatedId;
+    private Long evaluatedId;
 
     @Column(name = "score")
     private Integer score;
 
-    @Column(name = "content", length = 200)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "images", length = 500)
+    @Column(name = "images", columnDefinition = "TEXT")
     private String images;
-
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
 
     @Column(name = "status")
     private Integer status;
 
-    // Getters and Setters
+    @Column(name = "create_time")
+    private LocalDateTime createTime;
 
-    public String getEvalId() { return evalId; }
-    public void setEvalId(String evalId) { this.evalId = evalId; }
+    public Evaluation() {}
 
-    public String getOrderId() { return orderId; }
-    public void setOrderId(String orderId) { this.orderId = orderId; }
+    public String getEvalId() {
+        return evalId;
+    }
 
-    public Integer getEvaluatorId() { return evaluatorId; }
-    public void setEvaluatorId(Integer evaluatorId) { this.evaluatorId = evaluatorId; }
+    public void setEvalId(String evalId) {
+        this.evalId = evalId;
+    }
 
-    public Integer getEvaluatedId() { return evaluatedId; }
-    public void setEvaluatedId(Integer evaluatedId) { this.evaluatedId = evaluatedId; }
+    public Long getOrderId() {
+        return orderId;
+    }
 
-    public Integer getScore() { return score; }
-    public void setScore(Integer score) { this.score = score; }
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
 
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
+    public Long getEvaluatorId() {
+        return evaluatorId;
+    }
 
-    public String getImages() { return images; }
-    public void setImages(String images) { this.images = images; }
+    public void setEvaluatorId(Long evaluatorId) {
+        this.evaluatorId = evaluatorId;
+    }
 
-    public LocalDateTime getCreateTime() { return createTime; }
-    public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
+    public Long getEvaluatedId() {
+        return evaluatedId;
+    }
 
-    public Integer getStatus() { return status; }
-    public void setStatus(Integer status) { this.status = status; }
+    public void setEvaluatedId(Long evaluatedId) {
+        this.evaluatedId = evaluatedId;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 }

@@ -13,13 +13,13 @@
     <div class="review-list">
       <div v-for="goods in pendingGoods" :key="goods.id" class="review-card">
         <div class="goods-preview">
-          <img :src="goods.imageUrl" class="goods-img">
+          <img :src="goods.imageUrls && goods.imageUrls[0] ? goods.imageUrls[0] : 'https://via.placeholder.com/120'" class="goods-img">
           <div class="goods-detail">
-            <h3>{{ goods.name }}</h3>
+            <h3>{{ goods.title }}</h3>
             <p>价格：¥{{ goods.price }}</p>
             <p>分类：{{ goods.category }}</p>
-            <p>创作者：{{ goods.creatorName }}</p>
-            <p>提交时间：{{ goods.submitTime }}</p>
+            <p>库存：{{ goods.stock }}</p>
+            <p>提交时间：{{ formatDate(goods.createdAt) }}</p>
           </div>
         </div>
 
@@ -28,10 +28,10 @@
           <p>{{ goods.description }}</p>
         </div>
 
-        <div class="goods-images" v-if="goods.images && goods.images.length">
+        <div class="goods-images" v-if="goods.imageUrls && goods.imageUrls.length">
           <h4>商品图片</h4>
           <div class="image-list">
-            <img v-for="(img, idx) in goods.images" :key="idx" :src="img" @click="previewImage(img)">
+            <img v-for="(img, idx) in goods.imageUrls" :key="idx" :src="img" @click="previewImage(img)">
           </div>
         </div>
 
@@ -59,64 +59,77 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
 const filterStatus = ref('pending')
 const previewUrl = ref(null)
+const pendingGoods = ref([])
 
-const pendingGoods = ref([
-  {
-    id: 1,
-    name: '手工陶瓷杯',
-    price: 198,
-    category: '陶瓷',
-    creatorName: '陶瓷匠人',
-    submitTime: '2024-12-01 10:30',
-    description: '纯手工制作，釉色温润，每一件都是独一无二的艺术品。采用传统工艺，1300度高温烧制。',
-    images: [
-      'https://picsum.photos/id/30/200/200',
-      'https://picsum.photos/id/31/200/200'
-    ],
-    rejectReason: ''
-  },
-  {
-    id: 2,
-    name: '手工编织包',
-    price: 299,
-    category: '编织',
-    creatorName: '编织达人',
-    submitTime: '2024-12-01 14:20',
-    description: '手工编织，独特设计，时尚百搭。',
-    images: [
-      'https://picsum.photos/id/32/200/200'
-    ],
-    rejectReason: ''
-  }
-])
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  return date.toLocaleString('zh-CN')
+}
 
-const approveGoods = (goods) => {
-  if (confirm(`确定通过「${goods.name}」的审核吗？`)) {
-    const index = pendingGoods.value.findIndex(g => g.id === goods.id)
-    pendingGoods.value.splice(index, 1)
-    alert('审核通过，商品已上架')
+const approveGoods = async (goods) => {
+  if (confirm(`确定通过「${goods.title}」的审核吗？`)) {
+    try {
+      const response = await axios.post(`http://localhost:8080/api/goods/${goods.id}/audit`, {
+        approved: true,
+        reason: null
+      })
+      if (response.data.success) {
+        const index = pendingGoods.value.findIndex(g => g.id === goods.id)
+        pendingGoods.value.splice(index, 1)
+        alert('审核通过，商品已上架')
+      }
+    } catch (error) {
+      alert('审核失败：' + (error.response?.data?.message || error.message))
+    }
   }
 }
 
-const rejectGoods = (goods) => {
-  if (!goods.rejectReason.trim()) {
+const rejectGoods = async (goods) => {
+  if (!goods.rejectReason || !goods.rejectReason.trim()) {
     alert('请填写驳回原因')
     return
   }
-  if (confirm(`确定驳回「${goods.name}」吗？`)) {
-    const index = pendingGoods.value.findIndex(g => g.id === goods.id)
-    pendingGoods.value.splice(index, 1)
-    alert(`已驳回商品，原因：${goods.rejectReason}`)
+  if (confirm(`确定驳回「${goods.title}」吗？`)) {
+    try {
+      const response = await axios.post(`http://localhost:8080/api/goods/${goods.id}/audit`, {
+        approved: false,
+        reason: goods.rejectReason
+      })
+      if (response.data.success) {
+        const index = pendingGoods.value.findIndex(g => g.id === goods.id)
+        pendingGoods.value.splice(index, 1)
+        alert(`已驳回商品，原因：${goods.rejectReason}`)
+      }
+    } catch (error) {
+      alert('驳回失败：' + (error.response?.data?.message || error.message))
+    }
   }
 }
 
 const previewImage = (url) => {
   previewUrl.value = url
 }
+
+const loadPendingGoods = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/goods/admin/pending-audit?page=1&pageSize=10')
+    if (response.data.success) {
+      pendingGoods.value = response.data.data.content || []
+    }
+  } catch (error) {
+    console.error('加载待审核商品失败:', error)
+  }
+}
+
+onMounted(() => {
+  loadPendingGoods()
+})
 </script>
 
 <style scoped>

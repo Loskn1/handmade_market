@@ -7,6 +7,14 @@ public class LoginRequest {
     private String code;      // 验证码（演示）
     private Integer type;    // 1=用户 2=管理员
 
+    public LoginRequest() {
+    }
+
+    public LoginRequest(String userAccount, String password) {
+        this.userAccount = userAccount;
+        this.password = password;
+    }
+
     public String getUserAccount() {
         return userAccount;
     }
