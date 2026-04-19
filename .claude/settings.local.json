@@ -21,7 +21,9 @@
       "Bash(mvn spring-boot:run -DskipTests)",
       "Bash(mysql -h localhost -u root -pmysql123 handmade_platform)",
       "Bash(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout)",
-      "Bash(java -cp \"target/classes:$\\(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout\\)\" InsertGoodsData)"
+      "Bash(java -cp \"target/classes:$\\(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout\\)\" InsertGoodsData)",
+      "Bash(javac DeleteTestData.java)",
+      "Bash(java -cp \".:target/classes:$\\(mvn dependency:build-classpath -q -Dmdep.outputFile=/dev/stdout\\)\" DeleteTestData)"
     ]
   }
 }
