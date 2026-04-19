@@ -227,3 +227,38 @@ CREATE TABLE tb_custom_order (
     FOREIGN KEY (user_id) REFERENCES tb_user(user_id),
     FOREIGN KEY (goods_id) REFERENCES tb_goods(goods_id)
 ) COMMENT='定制订单表';
+
+
+-- 信用评分模块专属数据库脚本
+-- 信用操作记录日志表
+CREATE TABLE IF NOT EXISTS tb_credit_record (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+    user_id BIGINT NOT NULL COMMENT '关联用户ID',
+    admin_id BIGINT COMMENT '操作管理员ID',
+    score_change INT NOT NULL COMMENT '信用分数变动',
+    reason VARCHAR(500) COMMENT '操作原因/申诉备注',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='信用变更申诉记录表';
+
+-- 后台管理员信用统计视图
+CREATE VIEW IF NOT EXISTS v_user_credit_admin AS
+SELECT
+    id, username, credit_score,
+    CASE
+        WHEN credit_score >= 90 THEN '高信用'
+        WHEN credit_score >= 60 THEN '普通信用'
+        ELSE '低信用'
+    END AS credit_level,
+    status
+FROM tb_user;
+
+-- 信用分数自动封顶保底触发器
+DELIMITER //
+CREATE TRIGGER IF NOT EXISTS tr_credit_limit_check
+BEFORE UPDATE ON tb_user
+FOR EACH ROW
+BEGIN
+    IF NEW.credit_score > 100 THEN SET NEW.credit_score = 100; END IF;
+    IF NEW.credit_score < 0 THEN SET NEW.credit_score = 0; END IF;
+END //
+DELIMITER ;
