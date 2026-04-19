@@ -228,7 +228,7 @@ public class OrderServiceImpl implements OrderService {
         stats.put("pendingOrders", orderRepository.countBySellerIdAndStatus(sellerId, 0)
                 + orderRepository.countBySellerIdAndStatus(sellerId, 1));
         // 在售商品数量
-        long goodsCount = goodsRepository.countByCreatorId(sellerId);
+        long goodsCount = goodsRepository.countByCreatorId(sellerId.longValue());
         stats.put("totalGoods", goodsCount);
 
         return ResponseResult.ok(stats);
@@ -270,7 +270,7 @@ public class OrderServiceImpl implements OrderService {
                 return ResponseResult.fail("商品【" + goods.getTitle() + "】库存不足，当前库存: " + stock);
             }
 
-            Integer sellerId = goods.getCreatorId() != null ? goods.getCreatorId() : 0;
+            Integer sellerId = goods.getCreatorId() != null ? goods.getCreatorId().intValue() : 0;
             sellerItemsMap.computeIfAbsent(sellerId, k -> new ArrayList<>()).add(item);
         }
 
@@ -1091,7 +1091,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal sellAmount = orderRepository.sumAmountBySellerId(userId);
         long pendingOrders = orderRepository.countBySellerIdAndStatus(userId, 0)
                 + orderRepository.countBySellerIdAndStatus(userId, 1);
-        long goodsCount = goodsRepository.countByCreatorId(userId);
+        long goodsCount = goodsRepository.countByCreatorId(userId.longValue());
         stats.put("sellOrders", sellOrders);
         stats.put("sellAmount", sellAmount != null ? sellAmount : BigDecimal.ZERO);
         stats.put("pendingOrders", pendingOrders);

@@ -61,7 +61,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 
         Evaluation evaluation = new Evaluation();
         evaluation.setEvalId(String.valueOf(System.currentTimeMillis()));
-        evaluation.setOrderId(request.getOrderId());
+        evaluation.setOrderId(String.valueOf(request.getOrderId()));
         evaluation.setEvaluatorId(evaluatorId);
         evaluation.setEvaluatedId(request.getEvaluatedId());
         evaluation.setScore(request.getScore());
