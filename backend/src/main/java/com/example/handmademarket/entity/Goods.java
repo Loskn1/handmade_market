@@ -1,13 +1,10 @@
 package com.example.handmademarket.entity;
 
 import jakarta.persistence.*;
-
-
 import java.time.LocalDateTime;
 
-
 @Entity
-@Table(name = "goods")
+@Table(name = "tb_goods")
 public class Goods {
 
     @Id
@@ -15,13 +12,11 @@ public class Goods {
     @Column(name = "goods_id")
     private Long id;
 
-
-
     @Column(name = "creator_id")
-    private Integer creatorId;
+    private Long creatorId;
 
-    @Column(name = "goods_name", length = 50)
-    private String title;
+    @Column(name = "goods_name")
+    private String goodsName;
 
     @Column(name = "price")
     private Double price;
@@ -29,21 +24,35 @@ public class Goods {
     @Column(name = "reserve_price")
     private Double reservePrice;
 
-    @Column(name = "material", length = 50)
+    @Column(name = "material")
     private String material;
 
-    @Column(name = "size", length = 50)
+    @Column(name = "size")
     private String size;
 
-    @Column(name = "style", length = 50)
+    @Column(name = "style")
     private String style;
 
     @Column(name = "delivery_cycle")
     private Integer deliveryCycle;
 
-    @Column(name = "details", length = 500)
-    private String description;
+    @Column(name = "details")
+    private String details;
+
+    @Column(name = "images")
+    private String images;
+
+    @Column(name = "category")
     private String category;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "stock")
+    private Integer stock;
 
     @Column(name = "publish_time")
     private LocalDateTime publishTime;
@@ -57,12 +66,13 @@ public class Goods {
     @Column(name = "status")
     private Integer status;
 
-    @Column(name = "audit_remark", length = 200)
+    @Column(name = "audit_remark")
     private String auditRemark;
 
-    @Column(name = "images")
-    private String imageUrl;
-
+    @PrePersist
+    protected void onCreate() {
+        publishTime = LocalDateTime.now();
+    }
 
     // ==================== 全字段原生 Getter & Setter 方法 ====================
     public Long getId() {
@@ -73,56 +83,156 @@ public class Goods {
         this.id = id;
     }
 
+    public Long getCreatorId() {
+        return creatorId;
+    }
 
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+    }
 
-    public Integer getCreatorId() { return creatorId; }
-    public void setCreatorId(Integer creatorId) { this.creatorId = creatorId; }
+    public String getGoodsName() {
+        return goodsName;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
+    }
 
-    public Double getPrice() { return price; }
-    public void setPrice(Double price) { this.price = price; }
+    public Double getPrice() {
+        return price;
+    }
 
-    public Double getReservePrice() { return reservePrice; }
-    public void setReservePrice(Double reservePrice) { this.reservePrice = reservePrice; }
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
+    public Double getReservePrice() {
+        return reservePrice;
+    }
 
-    public String getMaterial() { return material; }
-    public void setMaterial(String material) { this.material = material; }
+    public void setReservePrice(Double reservePrice) {
+        this.reservePrice = reservePrice;
+    }
 
-    public String getSize() { return size; }
-    public void setSize(String size) { this.size = size; }
+    public String getMaterial() {
+        return material;
+    }
 
+    public void setMaterial(String material) {
+        this.material = material;
+    }
 
-    public String getStyle() { return style; }
-    public void setStyle(String style) { this.style = style; }
+    public String getSize() {
+        return size;
+    }
 
-    public Integer getDeliveryCycle() { return deliveryCycle; }
-    public void setDeliveryCycle(Integer deliveryCycle) { this.deliveryCycle = deliveryCycle; }
+    public void setSize(String size) {
+        this.size = size;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getStyle() {
+        return style;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setStyle(String style) {
+        this.style = style;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public Integer getDeliveryCycle() {
+        return deliveryCycle;
+    }
 
-    public LocalDateTime getPublishTime() { return publishTime; }
-    public void setPublishTime(LocalDateTime publishTime) { this.publishTime = publishTime; }
+    public void setDeliveryCycle(Integer deliveryCycle) {
+        this.deliveryCycle = deliveryCycle;
+    }
 
-    public LocalDateTime getAuditTime() { return auditTime; }
-    public void setAuditTime(LocalDateTime auditTime) { this.auditTime = auditTime; }
+    public String getDetails() {
+        return details;
+    }
 
-    public Integer getAuditorId() { return auditorId; }
-    public void setAuditorId(Integer auditorId) { this.auditorId = auditorId; }
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-    public Integer getStatus() { return status; }
-    public void setStatus(Integer status) { this.status = status; }
+    public String getImages() {
+        return images;
+    }
 
-    public String getAuditRemark() { return auditRemark; }
-    public void setAuditRemark(String auditRemark) { this.auditRemark = auditRemark; }
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public LocalDateTime getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(LocalDateTime publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public LocalDateTime getAuditTime() {
+        return auditTime;
+    }
+
+    public void setAuditTime(LocalDateTime auditTime) {
+        this.auditTime = auditTime;
+    }
+
+    public Integer getAuditorId() {
+        return auditorId;
+    }
+
+    public void setAuditorId(Integer auditorId) {
+        this.auditorId = auditorId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getAuditRemark() {
+        return auditRemark;
+    }
+
+    public void setAuditRemark(String auditRemark) {
+        this.auditRemark = auditRemark;
+    }
 }
 

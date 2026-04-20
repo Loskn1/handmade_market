@@ -137,9 +137,10 @@ public class AuthServiceImpl implements AuthService {
         /*if (!passwordEncoder.matches(request.getPassword(), admin.getAdminPwd())) {
             return ResponseResult.fail("密码错误");
         }*/
-       if(!request.getPassword().equals(admin.getAdminPwd())){
-           return ResponseResult.fail("密码错误");
-       }
+
+        if(!request.getPassword().equals(admin.getAdminPwd())){
+            return ResponseResult.fail("密码错误");
+        }
 
            
 
@@ -192,7 +193,7 @@ public class AuthServiceImpl implements AuthService {
         user.setUserAccount(userAccount);
         user.setPassword(passwordEncoder.encode(password));
         user.setPhone(phone);
-        user.setRole(request.getRole() != null ? request.getRole() : "1");
+        //user.setRole(request.getRole() != null ? request.getRole() : "1");
         user.setCreditScore(80);
         user.setStatus(1);
         user.setRegisterTime(new Date());

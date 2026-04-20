@@ -1,14 +1,15 @@
 package com.example.handmademarket.repository;
 
-import com.example.handmademarket.entity.Order;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.example.handmademarket.entity.Order;
 
 public interface OrderRepository extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order> {
 
@@ -34,4 +35,14 @@ public interface OrderRepository extends JpaRepository<Order, String>, JpaSpecif
 
     @Query("SELECT COALESCE(SUM(o.amount), 0) FROM Order o WHERE o.sellerId = :sellerId AND o.status >= 1")
     BigDecimal sumAmountBySellerId(@Param("sellerId") Integer sellerId);
+
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.buyerId = :buyerId")
+    long countByBuyerId(@Param("buyerId") Integer buyerId);
+
+    @Query("SELECT COALESCE(SUM(o.amount), 0) FROM Order o WHERE o.buyerId = :buyerId AND o.status >= 1")
+    BigDecimal sumAmountByBuyerId(@Param("buyerId") Integer buyerId);
+
+    @Query("SELECT COUNT(o) FROM Order o WHERE o.buyerId = :buyerId AND o.status = :status")
+    long countByBuyerIdAndStatus(@Param("buyerId") Integer buyerId, @Param("status") Integer status);
 }
+

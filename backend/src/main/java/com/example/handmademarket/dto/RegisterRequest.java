@@ -1,20 +1,20 @@
 package com.example.handmademarket.dto;
 
 public class RegisterRequest {
-
-    private String useraccount;
+    private String userAccount;
     private String password;
     private String confirmPassword;
     private String email;
     private String role;
     private String phone;
+    private String userName;
 
     public String getUserAccount() {
-        return useraccount;
+        return userAccount;
     }
 
-    public void setUserAccount(String useraccount) {
-        this.useraccount = useraccount;
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount;
     }
 
     public String getPassword() {
@@ -33,20 +33,20 @@ public class RegisterRequest {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPhone() {
-        return phone; 
+        return phone;
     }
 
     public void setPhone(String phone) {
-        this.phone = phone; 
+        this.phone = phone;
     }
 
     public String getConfirmPassword() {

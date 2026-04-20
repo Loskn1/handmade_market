@@ -230,6 +230,7 @@ CREATE TABLE tb_order_goods (
     FOREIGN KEY (goods_id) REFERENCES tb_goods(goods_id)
 ) COMMENT='订单商品关联表';
 
+
 -- ===================== 第三步：信用分封顶保底触发器（全MySQL版本兼容） =====================
 DELIMITER //
 CREATE TRIGGER IF NOT EXISTS tr_credit_limit_check
@@ -247,6 +248,7 @@ SELECT
     user_id AS id,
     user_name AS username,
     credit_score,
+
     CASE
         WHEN credit_score >= 90 THEN '高信用'
         WHEN credit_score >= 60 THEN '普通信用'
@@ -255,5 +257,7 @@ SELECT
     status
 FROM tb_user;
 
+
 -- ===================== 脚本结尾：恢复MySQL全局外键约束 =====================
 SET FOREIGN_KEY_CHECKS = 1;
+

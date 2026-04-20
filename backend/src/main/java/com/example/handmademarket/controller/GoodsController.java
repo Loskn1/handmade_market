@@ -1,13 +1,11 @@
 package com.example.handmademarket.controller;
 
-import com.example.handmademarket.entity.Goods;
-import com.example.handmademarket.repository.GoodsRepository;
+import com.example.handmademarket.dto.CreateGoodsRequest;
+import com.example.handmademarket.util.ResponseResult;
 import com.example.handmademarket.service.GoodsService;
-import com.example.handmademarket.util.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -15,33 +13,61 @@ import java.util.List;
 @RequestMapping("/api")
 public class GoodsController {
 
-    private final GoodsService goodsService;
-    private final GoodsRepository goodsRepository;
+    @Autowired
+    private GoodsService goodsService;
 
-    public GoodsController(GoodsService goodsService, GoodsRepository goodsRepository) {
-        this.goodsService = goodsService;
-        this.goodsRepository = goodsRepository;
+    @GetMapping("/list")
+    public ResponseEntity<ResponseResult> listGoods() {
+        return ResponseEntity.ok(goodsService.listGoods());
     }
 
-    // 智能搜索接口
+    @GetMapping("/category/{category}")
+    public ResponseEntity<ResponseResult> getGoodsByCategory(@PathVariable String category) {
+        return ResponseEntity.ok(goodsService.getGoodsByCategory(category));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ResponseResult> getGoodsByStatus(@PathVariable Integer status) {
+        return ResponseEntity.ok(goodsService.getGoodsByStatus(status));
+    }
+
     @GetMapping("/search")
-    public Result<List<Goods>> search(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "sort", required = false, defaultValue = "default") String sort
-    ){
-        return goodsService.searchGoods(keyword, sort);
+    public ResponseEntity<ResponseResult> searchGoods(@RequestParam String keyword) {
+        return ResponseEntity.ok(goodsService.searchGoods(keyword));
     }
 
-    // 智能推荐接口
-    @GetMapping("/goods/recommend")
-    public Result<List<Goods>> recommend(){
-        return goodsService.recommendGoods();
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseResult> getGoods(@PathVariable Long id) {
+        return ResponseEntity.ok(goodsService.getGoods(id));
     }
 
-    // 【新增】商品详情接口：根据ID查询单个商品
-    @GetMapping("/goods/{id}")
-    public Result<Goods> getGoodsDetail(@PathVariable Long id) {
-        Goods goods = goodsRepository.findById(id).orElse(null);
-        return Result.success(goods);
+    @PostMapping
+    public ResponseEntity<ResponseResult> createGoods(
+            @RequestBody CreateGoodsRequest request,
+            @RequestHeader("X-User-Id") Long creatorId) {
+        return ResponseEntity.ok(goodsService.createGoods(request, creatorId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseResult> updateGoods(
+            @PathVariable Long id,
+            @RequestBody CreateGoodsRequest request) {
+        return ResponseEntity.ok(goodsService.updateGoods(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseResult> offlineGoods(
+            @PathVariable Long id,
+            @RequestHeader("X-User-Id") Long creatorId) {
+        return ResponseEntity.ok(goodsService.offlineGoods(id, creatorId));
+    }
+
+    @PutMapping("/{id}/audit")
+    public ResponseEntity<ResponseResult> auditGoods(
+            @PathVariable Long id,
+            @RequestParam Integer status,
+            @RequestParam(required = false) String reason) {
+        return ResponseEntity.ok(goodsService.auditGoods(id, status, reason));
     }
 }
+
