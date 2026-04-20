@@ -216,6 +216,24 @@ CREATE TABLE tb_order_goods (
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
 ) COMMENT='订单商品关联表';
 
+-- ==============================================
+-- 11. 购物车表 tb_cart
+-- ==============================================
+DROP TABLE IF EXISTS tb_cart;
+CREATE TABLE tb_cart (
+    cart_id INT PRIMARY KEY AUTO_INCREMENT COMMENT '购物车ID，自增',
+    user_id INT NOT NULL COMMENT '用户ID，外键',
+    goods_id INT NOT NULL COMMENT '商品ID，外键',
+    goods_image VARCHAR(500) COMMENT '商品图片',
+    quantity INT NOT NULL DEFAULT 1 COMMENT '数量',
+    spec VARCHAR(50) DEFAULT '标准款' COMMENT '规格',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (user_id) REFERENCES tb_user(user_id),
+    FOREIGN KEY (goods_id) REFERENCES tb_goods(goods_id),
+    UNIQUE KEY uk_user_goods_spec (user_id, goods_id, spec)
+) COMMENT='购物车表';
+
 -- 定制订单表 tb_custom_order
 DROP TABLE IF EXISTS tb_custom_order;
 CREATE TABLE tb_custom_order (
